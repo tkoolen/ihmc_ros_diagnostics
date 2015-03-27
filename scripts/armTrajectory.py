@@ -6,7 +6,7 @@ import rospy
 from numpy import append
 
 from ihmc_msgs.msg import ArmJointTrajectoryPacketMessage
-from ihmc_msgs.msg import TrajectoryPointMessage
+from ihmc_msgs.msg import JointTrajectoryPointMessage
 
 
 LEFT = 0
@@ -44,7 +44,7 @@ def sendLeftArmTrajectory():
     armTrajectoryPublisher.publish(msg)
 
 def createTrajectoryPoint(time, positions):
-	point = TrajectoryPointMessage()
+	point = JointTrajectoryPointMessage()
 	point.time = time
 	point.positions = positions
 	point.velocities = ZERO_VECTOR
