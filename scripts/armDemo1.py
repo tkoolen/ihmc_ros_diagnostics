@@ -8,10 +8,6 @@ from numpy import append
 from ihmc_msgs.msg import ArmJointTrajectoryPacketMessage
 from ihmc_msgs.msg import JointTrajectoryPointMessage
 
-
-LEFT = 0
-RIGHT = 1
-
 LEFT_HOME = [0.1, -1.3, 1.94, 1.18, 0.0, -0.07, 0.0]
 RIGHT_HOME = [-0.1, 1.3, 1.94, -1.18, 0.0, 0.07, 0.0]
 ZERO_VECTOR = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
@@ -25,7 +21,7 @@ def sendRightArmTrajectory():
     					createTrajectoryPoint(4.0, ZERO_VECTOR),
     					createTrajectoryPoint(6.0, RIGHT_HOME)]
 
-    msg.robot_side = RIGHT
+    msg.robot_side = ArmJointTrajectoryPacketMessage.RIGHT
     msg.trajectory_points = trajectoryPoints
 
     print 'publishing right trajectory'
@@ -37,7 +33,7 @@ def sendLeftArmTrajectory():
     trajectoryPoints = [createTrajectoryPoint(2.0, ZERO_VECTOR),
     					createTrajectoryPoint(4.0, LEFT_HOME)]
 
-    msg.robot_side = LEFT
+    msg.robot_side = ArmJointTrajectoryPacketMessage.LEFT
     msg.trajectory_points = trajectoryPoints
 
     print 'publishing left trajectory'
@@ -52,7 +48,7 @@ def createTrajectoryPoint(time, positions):
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('ihmc_box_step')
+        rospy.init_node('ihmc_arm_demo1')
 
         armTrajectoryPublisher = rospy.Publisher('/ihmc_ros/atlas/control/arm_joint_trajectory', ArmJointTrajectoryPacketMessage, queue_size=1)
 

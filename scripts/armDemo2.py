@@ -8,9 +8,6 @@ from numpy import append
 from trajectory_msgs.msg import JointTrajectory
 from trajectory_msgs.msg import JointTrajectoryPoint
 
-LEFT = 0
-RIGHT = 1
-
 FLYING_LEFT = [0.09, -0.35, 1.93, 0.4, 0.0, 0.0, 0.0]
 FLYING_RIGHT = [-0.09, 0.35, 1.93, -0.4, 0.0, 0.0, 0.0]
 
@@ -48,7 +45,7 @@ def createTrajectoryPoint(time, positions):
 
 if __name__ == '__main__':
     try:
-        rospy.init_node('ihmc_box_step')
+        rospy.init_node('ihmc_arm_demo2')
 
         armTrajectoryPublisher = rospy.Publisher('/ihmc_ros/atlas/control/arm_joint_trajectory2', JointTrajectory, queue_size=1)
 
