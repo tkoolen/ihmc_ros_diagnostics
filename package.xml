@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>ihmc_diagnostics</name>
-  <version>0.3.0</version>
+  <version>0.3.2</version>
   <description>The ihmc_diagnostics package provides a collection of tools for analysing the robot controller.</description>
 
   <maintainer email="bshrewsbury@ihmc.us">The People's Glorious Point of Contact</maintainer>
@@ -18,7 +18,6 @@
   <build_depend>std_msgs</build_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>ihmc_msgs</run_depend>
-  <run_depend>ihmc_sim</run_depend>
   <run_depend>ihmc_atlas</run_depend>
 
 </package>

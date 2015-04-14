@@ -8,7 +8,7 @@
     <remap from="joint_states" to="/ihmc_ros/atlas/output/joint_states" />
     <remap from="robot_description" to="/atlas/robot_description" />
   </node>
-  <node name="IHMCAtlasAPISimulator" pkg="ihmc_sim" type="IHMCAtlasAPISimulator" args="-m $(arg ihmc_model) --requestAutomaticDiagnostic" required="true" output="screen" cwd="node">
+  <node name="IHMCAtlasAPISimulator" pkg="ihmc_atlas" type="IHMCAtlasAPISimulator" args="-m $(arg ihmc_model) --requestAutomaticDiagnostic" required="true" output="screen" cwd="node">
 	<env name="IHMC_ATLAS_API_OPTS" value="-DnetworkParameterFile=$(arg ihmc_network_file)" />
   </node>
 </launch>

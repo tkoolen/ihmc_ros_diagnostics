@@ -14,7 +14,7 @@ The Box Step demo is a simple test/example of commanding the robot using Footste
 The automated controller diagnostics are a more thorough workout of the whole body controller.  This can be run in simulation or on the real robot.
 
 ###Usage
-`roslaunch ihmc_diagnostics ihmc_sim_diagnostic.launch`: Run the automated diagnostic behavior in sim. Useful to see what the exercises look like.
+`roslaunch ihmc_diagnostics ihmc_sim_diagnostic.launch`: Run the automated diagnostic behavior in sim using SCS. Useful to see what the exercises look like.
 
 `roslaunch ihmc_diagnostics ihmc_atlas_diagnostic.launch`: Run the automated diagnostic behavior on the real robot. Useful for verifying the robustness of the control algorithm on different hardware. **(Coming Soon)**
 
