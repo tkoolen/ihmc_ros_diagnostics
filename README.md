@@ -10,6 +10,10 @@ The IHMC Controller is capable of generating custom logs that capture time-serie
 
 `roslaunch ihmc_diagnostics ihmc_logger.launch`: Run the IHMC Logging software for logging data from the controller.
 
+You can set the following roslaunch args:
+
+- `ihmc_network_file:=<absolute path to network file>`: Specific the network configuration .ini file for the IHMC software. See [the wiki](https://bitbucket.org/ihmcrobotics/ihmc_ros/wiki/configuration_files/network-config) for more information
+
 ## Box Step demo
 
 The Box Step demo is a simple test/example of commanding the robot using Footstep Lists from `ihmc_msgs`. It can be used as a pattern matching example and also to vet the walking and balancing algorithm on hardware.
