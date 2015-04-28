@@ -1,0 +1,6 @@
+<launch>
+  <arg name="ihmc_network_file" default="$(find ihmc_diagnostics)/configurations/IHMCNetworkParameters.ini" />
+  <node name="IHMCLogger" pkg="ihmc_atlas" type="IHMCLogger" required="true" output="screen" cwd="node">
+    <env name="IHMC_ATLAS_API_OPTS" value="-DnetworkParameterFile=$(arg ihmc_network_file)" />
+  </node>
+</launch>
