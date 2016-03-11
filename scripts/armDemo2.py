@@ -19,8 +19,10 @@ DOWN_RIGHT = [0.02, 1.07, 1.56, -0.53, 0.0, 0.0, 0.0]
 
 ZERO_VECTOR = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 
-RIGHT_NAMES = ['r_arm_shz', 'r_arm_shx', 'r_arm_ely', 'r_arm_elx', 'r_arm_wry', 'r_arm_wrx', 'r_arm_wry2']
-LEFT_NAMES = ['l_arm_shz', 'l_arm_shx', 'l_arm_ely', 'l_arm_elx', 'l_arm_wry', 'l_arm_wrx', 'l_arm_wry2']
+RIGHT_NAMES = None
+LEFT_NAMES = None
+
+ROBOT_NAME = NONE
 
 def sendRightArmTrajectory():
     msg = JointTrajectory()
@@ -33,7 +35,7 @@ def sendRightArmTrajectory():
                         createTrajectoryPoint(10.0, HOME_RIGHT)]
     msg.points = trajectoryPoints
 
-    print 'publishing right trajectory'
+    rospy.loginfo( 'publishing right trajectory')
     armTrajectoryPublisher.publish(msg)
 
 def createTrajectoryPoint(time, positions):
@@ -47,20 +49,39 @@ if __name__ == '__main__':
     try:
         rospy.init_node('ihmc_arm_demo2')
 
-        armTrajectoryPublisher = rospy.Publisher('/ihmc_ros/atlas/control/arm_joint_trajectory2', JointTrajectory, queue_size=1)
+        if not rospy.has_param('/ihmc_ros/robot_name'):
+            rospy.logerr("Cannot run armDemo2.py, missing parameters!")
+            rospy.logerr("Missing parameter '/ihmc_ros/robot_name'")
 
-        rate = rospy.Rate(10) # 10hz
-        time.sleep(1)
+        else:
+            ROBOT_NAME = rospy.get_param('/ihmc_ros/robot_name')
 
-        # make sure the simulation is running otherwise wait
-        if armTrajectoryPublisher.get_num_connections() == 0:
-            print 'waiting for subsciber...'
-            while armTrajectoryPublisher.get_num_connections() == 0:
-                rate.sleep()
+            right_arm_joint_parameter_names = "/ihmc_ros/{0}/right_arm_joint_names".format(ROBOT_NAME)
+            left_arm_joint_parameter_names = "/ihmc_ros/{0}/left_arm_joint_names".format(ROBOT_NAME)
 
-        if not rospy.is_shutdown():
-            sendRightArmTrajectory()
-            time.sleep(2)
+            if rospy.has_param(right_arm_joint_parameter_name) and rospy.has_param(left_arm_joint_parameter_name):
+                RIGHT_NAMES = rospy.get_param(right_arm_joint_parameter_name)
+                LEFT_NAMES = rospy.get_param(left_arm_joint_parameter_name)
+
+                armTrajectoryPublisher = rospy.Publisher("/ihmc_ros/{0}/control/arm_joint_trajectory2".format(ROBOT_NAME), JointTrajectory, queue_size=1)
+
+                rate = rospy.Rate(10) # 10hz
+                time.sleep(1)
+
+                # make sure the simulation is running otherwise wait
+                if armTrajectoryPublisher.get_num_connections() == 0:
+                    rospy.loginfo( 'waiting for subsciber...')
+                    while armTrajectoryPublisher.get_num_connections() == 0:
+                        rate.sleep()
+
+                if not rospy.is_shutdown():
+                    sendRightArmTrajectory()
+                    time.sleep(2)
+            else:
+                if not rospy.has_param(left_arm_joint_parameter_names):
+                    rospy.logerr("Missing parameter {0}".format(left_arm_joint_parameter_names))
+                if not rospy.has_param(right_arm_joint_parameter_names):
+                    rospy.logerr("Missing parameter{0}".format(right_arm_joint_parameter_names))
 
     except rospy.ROSInterruptException:
         pass

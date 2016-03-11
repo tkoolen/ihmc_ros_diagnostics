@@ -13,6 +13,8 @@ RIGHT_HOME = [-0.1, 1.3, 1.94, -1.18, 0.0, 0.07, 0.0]
 ZERO_VECTOR = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 ELBOW_BENT_UP = [0.0, 0.0, 0.0, -1.0, 0.0, 0.0, 0.0]
 
+ROBOT_NAME = None
+
 def sendRightArmTrajectory():
     msg = ArmJointTrajectoryPacketMessage()
 
@@ -24,7 +26,7 @@ def sendRightArmTrajectory():
     msg.robot_side = ArmJointTrajectoryPacketMessage.RIGHT
     msg.trajectory_points = trajectoryPoints
 
-    print 'publishing right trajectory'
+    rospy.loginfo('publishing right trajectory')
     armTrajectoryPublisher.publish(msg)
 
 def sendLeftArmTrajectory():
@@ -36,7 +38,7 @@ def sendLeftArmTrajectory():
     msg.robot_side = ArmJointTrajectoryPacketMessage.LEFT
     msg.trajectory_points = trajectoryPoints
 
-    print 'publishing left trajectory'
+    rospy.loginfo('publishing left trajectory')
     armTrajectoryPublisher.publish(msg)
 
 def createTrajectoryPoint(time, positions):
@@ -50,14 +52,16 @@ if __name__ == '__main__':
     try:
         rospy.init_node('ihmc_arm_demo1')
 
-        armTrajectoryPublisher = rospy.Publisher('/ihmc_ros/atlas/control/arm_joint_trajectory', ArmJointTrajectoryPacketMessage, queue_size=1)
+        ROBOT_NAME = rospy.get_param('/ihmc_ros/robot_name')
+
+        armTrajectoryPublisher = rospy.Publisher("/ihmc_ros/{0}/control/arm_joint_trajectory".format(ROBOT_NAME), ArmJointTrajectoryPacketMessage, queue_size=1)
 
         rate = rospy.Rate(10) # 10hz
         time.sleep(1)
 
         # make sure the simulation is running otherwise wait
         if armTrajectoryPublisher.get_num_connections() == 0:
-            print 'waiting for subsciber...'
+            rospy.loginfo('waiting for subsciber...')
             while armTrajectoryPublisher.get_num_connections() == 0:
                 rate.sleep()
 

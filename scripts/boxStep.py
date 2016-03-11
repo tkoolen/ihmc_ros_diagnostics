@@ -16,6 +16,10 @@ from ihmc_msgs.msg import FootstepDataMessage
 LEFT = 0
 RIGHT = 1
 
+ROBOT_NAME = None
+LEFT_FOOT_FRAME_NAME = None
+RIGHT_FOOT_FRAME_NAME = None
+
 def stepInPlace():
     msg = FootstepDataListMessage()
     msg.transfer_time = 1.5
@@ -27,7 +31,7 @@ def stepInPlace():
     msg.footstep_data_list.append(createFootStepInPlace(RIGHT))
 
     footStepListPublisher.publish(msg)
-    print 'walking in place...'
+    rospy.loginfo('walking in place...')
     waitForFootsteps(len(msg.footstep_data_list))
 
 def boxStep():
@@ -58,7 +62,7 @@ def boxStep():
     msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.0, 0.0, 0.0]))
 
     footStepListPublisher.publish(msg)
-    print 'box stepping...'
+    rospy.loginfo('box stepping...')
     waitForFootsteps(len(msg.footstep_data_list))
 
 # Creates footstep with the current position and orientation of the foot.
@@ -67,9 +71,9 @@ def createFootStepInPlace(stepSide):
     footstep.robot_side = stepSide
 
     if stepSide == LEFT:
-        foot_frame = 'l_foot'
+        foot_frame = LEFT_FOOT_FRAME_NAME
     else:
-        foot_frame = 'r_foot'
+        foot_frame = RIGHT_FOOT_FRAME_NAME
 
     footWorld = tfBuffer.lookup_transform('world', foot_frame, rospy.Time())
     footstep.orientation = footWorld.transform.rotation
@@ -97,7 +101,7 @@ def waitForFootsteps(numberOfSteps):
     stepCounter = 0
     while stepCounter < numberOfSteps:
         rate.sleep()
-    print 'finished set of steps'
+    rospy.loginfo('finished set of steps')
 
 def recievedFootStepStatus(msg):
     global stepCounter
@@ -108,28 +112,47 @@ if __name__ == '__main__':
     try:
         rospy.init_node('ihmc_box_step')
 
-        footStepStatusSubscriber = rospy.Subscriber('/ihmc_ros/atlas/output/footstep_status', FootstepStatusMessage, recievedFootStepStatus)
-        footStepListPublisher = rospy.Publisher('/ihmc_ros/atlas/control/footstep_list', FootstepDataListMessage, queue_size=1)
-        
-        tfBuffer = tf2_ros.Buffer()
-        tfListener = tf2_ros.TransformListener(tfBuffer)
+        if !rospy.has_param('/ihmc_ros/robot_name'):
+            rospy.logerr("Cannot run boxStep.py, missing parameters!")
+            rospy.logerr("Missing parameter '/ihmc_ros/robot_name'")
 
-        rate = rospy.Rate(10) # 10hz
-        time.sleep(1)
+        else:
+            ROBOT_NAME = rospy.get_param('/ihmc_ros/robot_name')
 
-        # make sure the simulation is running otherwise wait
-        if footStepListPublisher.get_num_connections() == 0:
-            print 'waiting for subsciber...'
-            while footStepListPublisher.get_num_connections() == 0:
-                rate.sleep()
+            right_foot_frame_parameter_name = "/ihmc_ros/{0}/right_foot_frame_name".format(ROBOT_NAME)
+            left_foot_frame_parameter_name = "/ihmc_ros/{0}/left_foot_frame_name".format(ROBOT_NAME)
 
-        if not rospy.is_shutdown():
-            stepInPlace()
+            if rospy.has_param(right_foot_frame_parameter_name) and rospy.has_param(left_foot_frame_parameter_name):
+                RIGHT_FOOT_FRAME_NAME = rospy.get_param(right_foot_frame_parameter_name)
+                LEFT_FOOT_FRAME_NAME = rospy.get_param(left_foot_frame_parameter_name)
 
-        time.sleep(1)
+                footStepStatusSubscriber = rospy.Subscriber("/ihmc_ros/{0}/output/footstep_status".format(ROBOT_NAME), FootstepStatusMessage, recievedFootStepStatus)
+                footStepListPublisher = rospy.Publisher("/ihmc_ros/{0}/control/footstep_list".format(ROBOT_NAME), FootstepDataListMessage, queue_size=1)
 
-        if not rospy.is_shutdown():
-            boxStep()
+                tfBuffer = tf2_ros.Buffer()
+                tfListener = tf2_ros.TransformListener(tfBuffer)
+
+                rate = rospy.Rate(10) # 10hz
+                time.sleep(1)
+
+                # make sure the simulation is running otherwise wait
+                if footStepListPublisher.get_num_connections() == 0:
+                    rospy.loginfo('waiting for subsciber...')
+                    while footStepListPublisher.get_num_connections() == 0:
+                        rate.sleep()
+
+                if not rospy.is_shutdown():
+                    stepInPlace()
+
+                time.sleep(1)
+
+                if not rospy.is_shutdown():
+                    boxStep()
+            else:
+                if not rospy.has_param(left_foot_frame_parameter_name):
+                    rospy.logerr("Missing parameter {0}".format(left_foot_frame_parameter_name))
+                if not rospy.has_param(right_foot_frame_parameter_name):
+                    rospy.logerr("Missing parameter {0}".format(right_foot_frame_parameter_name))
 
     except rospy.ROSInterruptException:
         pass
