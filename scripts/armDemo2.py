@@ -22,7 +22,7 @@ ZERO_VECTOR = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 RIGHT_NAMES = None
 LEFT_NAMES = None
 
-ROBOT_NAME = NONE
+ROBOT_NAME = None
 
 def sendRightArmTrajectory():
     msg = JointTrajectory()
@@ -59,9 +59,9 @@ if __name__ == '__main__':
             right_arm_joint_parameter_names = "/ihmc_ros/{0}/right_arm_joint_names".format(ROBOT_NAME)
             left_arm_joint_parameter_names = "/ihmc_ros/{0}/left_arm_joint_names".format(ROBOT_NAME)
 
-            if rospy.has_param(right_arm_joint_parameter_name) and rospy.has_param(left_arm_joint_parameter_name):
-                RIGHT_NAMES = rospy.get_param(right_arm_joint_parameter_name)
-                LEFT_NAMES = rospy.get_param(left_arm_joint_parameter_name)
+            if rospy.has_param(right_arm_joint_parameter_names) and rospy.has_param(left_arm_joint_parameter_names):
+                RIGHT_NAMES = rospy.get_param(right_arm_joint_parameter_names)
+                LEFT_NAMES = rospy.get_param(left_arm_joint_parameter_names)
 
                 armTrajectoryPublisher = rospy.Publisher("/ihmc_ros/{0}/control/arm_joint_trajectory2".format(ROBOT_NAME), JointTrajectory, queue_size=1)
 

@@ -112,7 +112,7 @@ if __name__ == '__main__':
     try:
         rospy.init_node('ihmc_box_step')
 
-        if !rospy.has_param('/ihmc_ros/robot_name'):
+        if not rospy.has_param('/ihmc_ros/robot_name'):
             rospy.logerr("Cannot run boxStep.py, missing parameters!")
             rospy.logerr("Missing parameter '/ihmc_ros/robot_name'")
 
