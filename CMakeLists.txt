@@ -24,7 +24,8 @@ install(DIRECTORY launch
 
 install(DIRECTORY configurations
   DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-  FILES_MATCHING PATTERN "*.ini"
+  PATTERN "*.ini"
+  PATTERN "*.yaml"
 )
 
 install(PROGRAMS

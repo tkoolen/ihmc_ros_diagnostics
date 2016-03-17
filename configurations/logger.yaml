@@ -1,0 +1,7 @@
+!ihmc_ros_java_adapter
+programArgs: []
+vmConfig:
+  heapSize: null
+  mainMethod: us.ihmc.robotDataCommunication.logger.YoVariableLoggerDispatcher
+dependencies:
+- us.ihmc:RobotDataCommunication:LOCAL
