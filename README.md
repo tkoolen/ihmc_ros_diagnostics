@@ -12,21 +12,33 @@ The IHMC Controller is capable of generating custom logs that capture time-serie
 
 You can set the following roslaunch args:
 
-- `ihmc_network_file:=<absolute path to network file>`: Specific the network configuration .ini file for the IHMC software. See [the wiki](https://bitbucket.org/ihmcrobotics/ihmc_ros/wiki/configuration_files/network-config) for more information
+- `ihmc_network_file:=<absolute path to network file>`: Specific the network configuration .ini file for the IHMC software. See [the GitHub pages documentation](TODO fill this in) for more information
 
 ## Box Step demo
 
-The Box Step demo is a simple test/example of commanding the robot using Footstep Lists from `ihmc_msgs`. It can be used as a pattern matching example and also to vet the walking and balancing algorithm on hardware.
+The Box Step demo is a simple test/example of commanding the robot using Footstep Lists from `ihmc_msgs`. It can be used as a pattern matching example and also to vet the walking and balancing algorithm on hardware. To use this script properly, there are a few ROS paramters that need to be set:
+
+- `/ihmc_ros/robot_name`
+- `/ihmc_ros/<robot name>/left_foot_frame_name`
+- `ihmc_ros/<robot name>/right_foot_frame_name`
+
+For examples, see the launch files in `ihmc_atlas` or `ihmc_valkyrie`, which use a special launch file in the "common" subdirectory of the "launch" directory to configure these topics.
 
 ###Usage
-`rosrun ihmc_diagnostics boxStep.py`
 
-## Automated Controller Diagnostics
+- Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie ihmc_valkyrie_scs.launch`
+- `rosrun ihmc_diagnostics boxStep.py`
 
-The automated controller diagnostics are a more thorough workout of the whole body controller.  This can be run in simulation or on the real robot.
+## Arm demos
+
+Two arm demos are provided. Similar to the box step demos, the robot name paramter must be set as well as the names of the robot's arm joints as an array in kinematic ordering. For examples of how to configure these parameters, you can look at the launch files in `ihmc_atlas` or `ihmc_valkyrie`.
+
+The parameter names are:
+
+- `/ihmc_ros/<robot name>/right_arm_joint_names`
+- `/ihmc_ros/<robot name>/left_arm_joint_names`
 
 ###Usage
 
-`roslaunch ihmc_diagnostics ihmc_sim_diagnostic.launch`: Run the automated diagnostic behavior in sim using SCS. Useful to see what the exercises look like.
-
-`roslaunch ihmc_diagnostics ihmc_atlas_diagnostic.launch`: Run the automated diagnostic behavior on the real robot. Useful for verifying the robustness of the control algorithm on different hardware. **(Coming Soon)**
+- Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie ihmc_valkyrie_scs.launch`
+-`rosrun ihmc_diagnostics armDemo1.py` or `rosrun ihmc_diagnostics armDemo2.py`
