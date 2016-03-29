@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package>
-  <name>ihmc_diagnostics</name>
+  <name>ihmc_ros_diagnostics</name>
   <version>0.8.0</version>
-  <description>The ihmc_diagnostics package provides a collection of tools for analysing the robot controller.</description>
+  <description>The ihmc_ros_diagnostics package provides a collection of tools for analysing the robot controller.</description>
 
   <maintainer email="dstephen@ihmc.us">Doug Stephen</maintainer>
 
   <license>Apache 2.0</license>
 
-  <url type="website">https://github.com/ihmcrobotics/ihmc_diagnostics_ros</url>
+  <url type="website">https://github.com/ihmcrobotics/ihmc_ros_diagnostics</url>
 
   <author email="dstephen@ihmc.us">Doug Stephen</author>
 

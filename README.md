@@ -1,4 +1,4 @@
-#ihmc\_diagnostics
+#ihmc\_ros\_diagnostics
 
 Diagnostics tools for analyzing the IHMC ROS distribution
 
@@ -8,7 +8,7 @@ The IHMC Controller is capable of generating custom logs that capture time-serie
 
 ###Usage
 
-`roslaunch ihmc_diagnostics ihmc_logger.launch`: Run the IHMC Logging software for logging data from the controller.
+`roslaunch ihmc_ros_diagnostics ihmc_logger.launch`: Run the IHMC Logging software for logging data from the controller.
 
 You can set the following roslaunch args:
 
@@ -27,7 +27,7 @@ For examples, see the launch files in `ihmc_atlas_ros` or `ihmc_valkyrie_ros`, w
 ###Usage
 
 - Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie_ros ihmc_valkyrie_scs.launch`
-- `rosrun ihmc_diagnostics boxStep.py`
+- `rosrun ihmc_ros_diagnostics boxStep.py`
 
 ## Arm demos
 
@@ -41,4 +41,4 @@ The parameter names are:
 ###Usage
 
 - Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie_ros ihmc_valkyrie_scs.launch`
--`rosrun ihmc_diagnostics armDemo1.py` or `rosrun ihmc_diagnostics armDemo2.py`
+-`rosrun ihmc_ros_diagnostics armDemo1.py` or `rosrun ihmc_ros_diagnostics armDemo2.py`

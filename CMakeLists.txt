@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(ihmc_diagnostics)
+project(ihmc_ros_diagnostics)
 
 find_package(catkin REQUIRED COMPONENTS
   ihmc_msgs
