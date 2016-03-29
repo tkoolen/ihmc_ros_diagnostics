@@ -22,16 +22,16 @@ The Box Step demo is a simple test/example of commanding the robot using Footste
 - `/ihmc_ros/<robot name>/left_foot_frame_name`
 - `ihmc_ros/<robot name>/right_foot_frame_name`
 
-For examples, see the launch files in `ihmc_atlas` or `ihmc_valkyrie`, which use a special launch file in the "common" subdirectory of the "launch" directory to configure these topics.
+For examples, see the launch files in `ihmc_atlas_ros` or `ihmc_valkyrie_ros`, which use a special launch file in the "common" subdirectory of the "launch" directory to configure these topics.
 
 ###Usage
 
-- Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie ihmc_valkyrie_scs.launch`
+- Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie_ros ihmc_valkyrie_scs.launch`
 - `rosrun ihmc_diagnostics boxStep.py`
 
 ## Arm demos
 
-Two arm demos are provided. Similar to the box step demos, the robot name paramter must be set as well as the names of the robot's arm joints as an array in kinematic ordering. For examples of how to configure these parameters, you can look at the launch files in `ihmc_atlas` or `ihmc_valkyrie`.
+Two arm demos are provided. Similar to the box step demos, the robot name paramter must be set as well as the names of the robot's arm joints as an array in kinematic ordering. For examples of how to configure these parameters, you can look at the launch files in `ihmc_atlas_ros` or `ihmc_valkyrie_ros`.
 
 The parameter names are:
 
@@ -40,5 +40,5 @@ The parameter names are:
 
 ###Usage
 
-- Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie ihmc_valkyrie_scs.launch`
+- Roslaunch an SCS simulation with the IHMC ROS API node, e.g. `roslaunch ihmc_valkyrie_ros ihmc_valkyrie_scs.launch`
 -`rosrun ihmc_diagnostics armDemo1.py` or `rosrun ihmc_diagnostics armDemo2.py`
