@@ -1,0 +1,6 @@
+<launch>
+  <arg name="ihmc_network_file" default="$(find ihmc_ros_diagnostics)/configurations/IHMCNetworkParameters.ini" />
+
+  <node name="IHMCLogger" pkg="ihmc_ros_java_adapter" type="gradlew" args="runJava -Dus.ihmc.networkParameterFile=$(arg ihmc_network_file) -Pyaml=$(find ihmc_ros_diagnostics)/configurations/behavior_viz.yaml" required="true" output="screen" cwd="node">
+  </node>
+</launch>
