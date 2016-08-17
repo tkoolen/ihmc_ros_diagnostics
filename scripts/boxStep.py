@@ -9,9 +9,9 @@ import numpy
 from geometry_msgs.msg import Vector3
 from geometry_msgs.msg import Quaternion
 
-from ihmc_msgs.msg import FootstepStatusMessage
-from ihmc_msgs.msg import FootstepDataListMessage
-from ihmc_msgs.msg import FootstepDataMessage
+from ihmc_msgs.msg import FootstepStatusRosMessage
+from ihmc_msgs.msg import FootstepDataListRosMessage
+from ihmc_msgs.msg import FootstepDataRosMessage
 
 LEFT = 0
 RIGHT = 1
@@ -21,9 +21,11 @@ LEFT_FOOT_FRAME_NAME = None
 RIGHT_FOOT_FRAME_NAME = None
 
 def stepInPlace():
-    msg = FootstepDataListMessage()
+    msg = FootstepDataListRosMessage()
     msg.transfer_time = 1.5
     msg.swing_time = 1.5
+    msg.execution_mode = 0
+    msg.unique_id = -1
 
     msg.footstep_data_list.append(createFootStepInPlace(LEFT))
     msg.footstep_data_list.append(createFootStepInPlace(RIGHT))
@@ -35,9 +37,11 @@ def stepInPlace():
     waitForFootsteps(len(msg.footstep_data_list))
 
 def boxStep():
-    msg = FootstepDataListMessage()
+    msg = FootstepDataListRosMessage()
     msg.transfer_time = 1.5
     msg.swing_time = 1.5
+    msg.execution_mode = 0
+    msg.unique_id = -1
 
     # walk forward starting LEFT
     msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.2, 0.0, 0.0]))
@@ -67,7 +71,7 @@ def boxStep():
 
 # Creates footstep with the current position and orientation of the foot.
 def createFootStepInPlace(stepSide):
-    footstep = FootstepDataMessage()
+    footstep = FootstepDataRosMessage()
     footstep.robot_side = stepSide
 
     if stepSide == LEFT:
@@ -126,8 +130,8 @@ if __name__ == '__main__':
                 RIGHT_FOOT_FRAME_NAME = rospy.get_param(right_foot_frame_parameter_name)
                 LEFT_FOOT_FRAME_NAME = rospy.get_param(left_foot_frame_parameter_name)
 
-                footStepStatusSubscriber = rospy.Subscriber("/ihmc_ros/{0}/output/footstep_status".format(ROBOT_NAME), FootstepStatusMessage, recievedFootStepStatus)
-                footStepListPublisher = rospy.Publisher("/ihmc_ros/{0}/control/footstep_list".format(ROBOT_NAME), FootstepDataListMessage, queue_size=1)
+                footStepStatusSubscriber = rospy.Subscriber("/ihmc_ros/{0}/output/footstep_status".format(ROBOT_NAME), FootstepStatusRosMessage, recievedFootStepStatus)
+                footStepListPublisher = rospy.Publisher("/ihmc_ros/{0}/control/footstep_list".format(ROBOT_NAME), FootstepDataListRosMessage, queue_size=1)
 
                 tfBuffer = tf2_ros.Buffer()
                 tfListener = tf2_ros.TransformListener(tfBuffer)
