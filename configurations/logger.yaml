@@ -4,4 +4,4 @@ vmConfig:
   heapSize: null
   mainMethod: us.ihmc.robotDataCommunication.logger.YoVariableLoggerDispatcher
 dependencies:
-- us.ihmc:RobotDataCommunication:0.8.0
+- us.ihmc:RobotDataCommunication:0.8.1
