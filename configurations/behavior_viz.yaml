@@ -4,4 +4,4 @@ vmConfig:
   heapSize: null
   mainMethod: us.ihmc.humanoidBehaviors.BehaviorVisualizer
 dependencies:
-- us.ihmc:IHMCHumanoidBehaviors:0.8.0
+- us.ihmc:IHMCHumanoidBehaviors:0.8.2
