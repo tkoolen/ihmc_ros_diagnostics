@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>ihmc_ros_diagnostics</name>
-  <version>0.8.2</version>
+  <version>0.9.0</version>
   <description>The ihmc_ros_diagnostics package provides a collection of tools for analysing the robot controller.</description>
 
   <maintainer email="dstephen@ihmc.us">Doug Stephen</maintainer>
