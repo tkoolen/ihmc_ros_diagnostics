@@ -2,6 +2,6 @@
 programArgs: []
 vmConfig:
   heapSize: null
-  mainMethod: us.ihmc.humanoidBehaviors.BehaviorVisualizer
+  mainMethod: us.ihmc.robotDataVisualizer.logger.BehaviorVisualizer
 dependencies:
-- us.ihmc:IHMCHumanoidBehaviors:0.9.0
+- us.ihmc:IHMCRobotDataVisualizer:0.9.0
