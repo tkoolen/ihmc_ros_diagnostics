@@ -2,6 +2,6 @@
 programArgs: []
 vmConfig:
   heapSize: null
-  mainMethod: us.ihmc.robotDataCommunication.logger.YoVariableLoggerDispatcher
+  mainMethod: us.ihmc.robotDataLogger.logger.YoVariableLoggerDispatcher
 dependencies:
-- us.ihmc:RobotDataCommunication:0.9.0
+- us.ihmc:IHMCRobotDataLogger:0.9.0
