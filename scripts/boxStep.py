@@ -22,8 +22,8 @@ RIGHT_FOOT_FRAME_NAME = None
 
 def stepInPlace():
     msg = FootstepDataListRosMessage()
-    msg.transfer_time = 1.5
-    msg.swing_time = 1.5
+    msg.default_transfer_time = 1.5
+    msg.default_swing_time = 1.5
     msg.execution_mode = 0
     msg.unique_id = -1
 
@@ -38,8 +38,8 @@ def stepInPlace():
 
 def boxStep():
     msg = FootstepDataListRosMessage()
-    msg.transfer_time = 1.5
-    msg.swing_time = 1.5
+    msg.default_transfer_time = 1.5
+    msg.default_swing_time = 1.5
     msg.execution_mode = 0
     msg.unique_id = -1
 
