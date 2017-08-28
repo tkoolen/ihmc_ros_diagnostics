@@ -20,6 +20,7 @@
 
   <run_depend>rospy</run_depend>
   <run_depend>geometry_msgs</run_depend>
+  <run_depend>tf2_geometry_msgs</run_depend>
   <run_depend>std_msgs</run_depend>
   <run_depend>ihmc_msgs</run_depend>
   <run_depend>ihmc_ros_common</run_depend>
