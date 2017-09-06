@@ -2,12 +2,15 @@
 
 import time
 import rospy
-import tf
 import tf2_ros
+import tf2_geometry_msgs
 import numpy
 
+from std_msgs.msg import Header
 from geometry_msgs.msg import Vector3
 from geometry_msgs.msg import Quaternion
+from geometry_msgs.msg import Point
+from geometry_msgs.msg import PointStamped
 
 from ihmc_msgs.msg import FootstepStatusRosMessage
 from ihmc_msgs.msg import FootstepDataListRosMessage
@@ -22,81 +25,69 @@ RIGHT_FOOT_FRAME_NAME = None
 
 def stepInPlace():
     msg = FootstepDataListRosMessage()
-    msg.transfer_time = 1.5
-    msg.swing_time = 1.5
+    msg.default_transfer_time = 1.5
+    msg.default_swing_time = 1.5
     msg.execution_mode = 0
     msg.unique_id = -1
+    step_width = 0.3
 
-    msg.footstep_data_list.append(createFootStepInPlace(LEFT))
-    msg.footstep_data_list.append(createFootStepInPlace(RIGHT))
-    msg.footstep_data_list.append(createFootStepInPlace(LEFT))
-    msg.footstep_data_list.append(createFootStepInPlace(RIGHT))
+    rightFootFrame = Header()
+    rightFootFrame.frame_id = RIGHT_FOOT_FRAME_NAME
+
+    for x in xrange(3): # TODO
+        msg.footstep_data_list.append(createFootstep(LEFT, PointStamped(rightFootFrame, Point(0., step_width, 0.))))
+        msg.footstep_data_list.append(createFootstep(RIGHT, PointStamped(rightFootFrame, Point(0., 0., 0.))))
 
     footStepListPublisher.publish(msg)
     rospy.loginfo('walking in place...')
     waitForFootsteps(len(msg.footstep_data_list))
 
 def boxStep():
+    rospy.loginfo('start of boxStep.')
     msg = FootstepDataListRosMessage()
-    msg.transfer_time = 1.5
-    msg.swing_time = 1.5
+    msg.default_transfer_time = 1.5
+    msg.default_swing_time = 1.5
     msg.execution_mode = 0
     msg.unique_id = -1
 
-    # walk forward starting LEFT
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.2, 0.0, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(RIGHT, [0.4, 0.0, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.4, 0.0, 0.0]))
+    rightFootFrame = Header()
+    rightFootFrame.frame_id = RIGHT_FOOT_FRAME_NAME
 
-    # walk left starting LEFT
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.4, 0.2, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(RIGHT, [0.4, 0.2, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.4, 0.4, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(RIGHT, [0.4, 0.4, 0.0]))
+    step_width_small = 0.3
+    step_width_big = 0.4
+    stride_length = 0.2
 
-    # walk back starting LEFT
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.2, 0.4, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(RIGHT, [0.0, 0.4, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.0, 0.4, 0.0]))
-
-    # walk right starting RIGHT
-    msg.footstep_data_list.append(createFootStepOffset(RIGHT, [0.0, 0.2, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.0, 0.2, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(RIGHT, [0.0, 0.0, 0.0]))
-    msg.footstep_data_list.append(createFootStepOffset(LEFT, [0.0, 0.0, 0.0]))
+    for x in xrange(2):
+        msg.footstep_data_list.append(createFootstep(LEFT, PointStamped(rightFootFrame, Point(stride_length, step_width_small, 0.))))
+        msg.footstep_data_list.append(createFootstep(RIGHT, PointStamped(rightFootFrame, Point(stride_length, step_width_small - step_width_big, 0.))))
+        msg.footstep_data_list.append(createFootstep(LEFT, PointStamped(rightFootFrame, Point(stride_length, 2 * step_width_small - step_width_big, 0.))))
+        msg.footstep_data_list.append(createFootstep(RIGHT, PointStamped(rightFootFrame, Point(0., step_width_small - step_width_big, 0.))))
+        msg.footstep_data_list.append(createFootstep(LEFT, PointStamped(rightFootFrame, Point(0., step_width_small, 0.))))
+        msg.footstep_data_list.append(createFootstep(RIGHT, PointStamped(rightFootFrame, Point(0., 0., 0.))))
 
     footStepListPublisher.publish(msg)
     rospy.loginfo('box stepping...')
     waitForFootsteps(len(msg.footstep_data_list))
 
-# Creates footstep with the current position and orientation of the foot.
-def createFootStepInPlace(stepSide):
+# Create a new footstep at the given position, with the same orientation as the stance foot
+def createFootstep(stepSide, position):
     footstep = FootstepDataRosMessage()
     footstep.robot_side = stepSide
 
+    # transform position to world
+    positionWorld = tfBuffer.transform(position, 'world')
+    footstep.location.x = positionWorld.point.x
+    footstep.location.y = positionWorld.point.y
+    footstep.location.z = positionWorld.point.z
+
+    # take orientation from stance foot
     if stepSide == LEFT:
-        foot_frame = LEFT_FOOT_FRAME_NAME
+        stanceFootFrame = RIGHT_FOOT_FRAME_NAME
     else:
-        foot_frame = RIGHT_FOOT_FRAME_NAME
+        stanceFootFrame = LEFT_FOOT_FRAME_NAME
 
-    footWorld = tfBuffer.lookup_transform('world', foot_frame, rospy.Time())
-    footstep.orientation = footWorld.transform.rotation
-    footstep.location = footWorld.transform.translation
-
-    return footstep
-
-# Creates footstep offset from the current foot position. The offset is in foot frame.
-def createFootStepOffset(stepSide, offset):
-    footstep = createFootStepInPlace(stepSide)
-
-    # transform the offset to world frame
-    quat = footstep.orientation
-    rot = tf.transformations.quaternion_matrix([quat.x, quat.y, quat.z, quat.w])
-    transformedOffset = numpy.dot(rot[0:3, 0:3], offset)
-
-    footstep.location.x += transformedOffset[0]
-    footstep.location.y += transformedOffset[1]
-    footstep.location.z += transformedOffset[2]
+    stanceFootToWorld = tfBuffer.lookup_transform('world', stanceFootFrame, rospy.Time())
+    footstep.orientation = stanceFootToWorld.transform.rotation
 
     return footstep
 
@@ -107,7 +98,7 @@ def waitForFootsteps(numberOfSteps):
         rate.sleep()
     rospy.loginfo('finished set of steps')
 
-def recievedFootStepStatus(msg):
+def receivedFootStepStatus(msg):
     global stepCounter
     if msg.status == 1:
         stepCounter += 1
@@ -130,7 +121,7 @@ if __name__ == '__main__':
                 RIGHT_FOOT_FRAME_NAME = rospy.get_param(right_foot_frame_parameter_name)
                 LEFT_FOOT_FRAME_NAME = rospy.get_param(left_foot_frame_parameter_name)
 
-                footStepStatusSubscriber = rospy.Subscriber("/ihmc_ros/{0}/output/footstep_status".format(ROBOT_NAME), FootstepStatusRosMessage, recievedFootStepStatus)
+                footStepStatusSubscriber = rospy.Subscriber("/ihmc_ros/{0}/output/footstep_status".format(ROBOT_NAME), FootstepStatusRosMessage, receivedFootStepStatus)
                 footStepListPublisher = rospy.Publisher("/ihmc_ros/{0}/control/footstep_list".format(ROBOT_NAME), FootstepDataListRosMessage, queue_size=1)
 
                 tfBuffer = tf2_ros.Buffer()
@@ -152,6 +143,7 @@ if __name__ == '__main__':
 
                 if not rospy.is_shutdown():
                     boxStep()
+
             else:
                 if not rospy.has_param(left_foot_frame_parameter_name):
                     rospy.logerr("Missing parameter {0}".format(left_foot_frame_parameter_name))
@@ -160,3 +152,4 @@ if __name__ == '__main__':
 
     except rospy.ROSInterruptException:
         pass
+
